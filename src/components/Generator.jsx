@@ -1,5 +1,5 @@
 import CardComponent from "./CardComponent"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 function Header() {
     return (
@@ -11,27 +11,44 @@ function Header() {
 }
 
 export default function Generator() {
-  const tempPhoto = 'https://images.unsplash.com/photo-1728233363803-88a1226bf91d?q=80&w=1886&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-  const [cards, setCards] = useState([
-    { id: 1, name: "Card 1", url: tempPhoto },
-    { id: 2, name: "Card 2", url: tempPhoto },
-    { id: 3, name: "Card 3", url: tempPhoto },
-    { id: 4, name: "Card 4", url: tempPhoto },
-    { id: 5, name: "Card 5", url: tempPhoto },
-    { id: 6, name: "Card 6", url: tempPhoto },
-    { id: 7, name: "Card 7", url: tempPhoto },
-    { id: 8, name: "Card 8", url: tempPhoto },
-    { id: 9, name: "Card 9", url: tempPhoto }
-  ])
+  
+  const [cards, setCards] = useState([])
 
-  const fetchData = (url) => {
-    new Promise((resolve, reject) => {
-        
-    })
-  }
+  useEffect(() => {
+    function addCards() {
+        const tempPhoto = 'https://images.unsplash.com/photo-1728233363803-88a1226bf91d?q=80&w=1886&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+        const newCards = []
+        for (let i = 1; i <= 20 ; i ++) {
+            newCards.push({ id: i, name: `Card ${i}`, url: tempPhoto})
+        }
+
+        const shuffledCards = newCards.sort(() => Math.random() - 0.5)
+        const selectedCards = shuffledCards.slice(0, 12)
+    
+        setCards(selectedCards)
+      }
+
+      
+      
+      addCards();
+  }, [])
+  
+
+//   async function fetchCardData() {
+//     try {
+//         const response = await(fetch('google.ca'))
+//         const data = await response.json()
+//         console.log(data)
+//         return data
+//     } catch (error) {
+//         console.log('Error: ', error)
+//     }
+//   }
+
+//   fetchCardData()
 
   function updateCards() {
-
+    alert('Card was clicked')
   }
 
   return (
@@ -43,8 +60,10 @@ export default function Generator() {
                         return (
                             <CardComponent 
                                 key={card.id}
+                                id={card.id}
                                 name={card.name}
                                 url={card.url}
+                                updateCards={updateCards}
                             />
                         )
                     })}
