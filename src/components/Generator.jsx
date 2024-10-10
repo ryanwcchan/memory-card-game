@@ -11,41 +11,50 @@ function Header() {
 }
 
 export default function Generator() {
-  
-  const [cards, setCards] = useState([])
+  const [cardData, setCardData] = useState([])
 
   useEffect(() => {
-    function addCards() {
-        const tempPhoto = 'https://images.unsplash.com/photo-1728233363803-88a1226bf91d?q=80&w=1886&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-        const newCards = []
-        for (let i = 1; i <= 20 ; i ++) {
-            newCards.push({ id: i, name: `Card ${i}`, url: tempPhoto})
+    async function fetchCardData() {
+        const today = (new Date()).toDateString()
+        const API_URL = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?archetype=Drytron'
+    
+        const localKey = `YugiohCards-${today}`
+    
+        if (localStorage.getItem(localKey)) {
+            const storedData = JSON.parse(localStorage.getItem(localKey))
+            setCardData(shuffleCards(storedData.data));
+            console.log('Fetched card data from cache')
+            console.log(storedData.data)
+            return
         }
 
-        const shuffledCards = newCards.sort(() => Math.random() - 0.5)
-        const selectedCards = shuffledCards.slice(0, 12)
+        localStorage.clear()
     
-        setCards(selectedCards)
+        // const shuffledCards = newCards.sort(() => Math.random() - 0.5)
+        // const selectedCards = shuffledCards.slice(0, 12)
+    
+        try {
+            const response = await(fetch(API_URL))
+            const data = await response.json()
+    
+            // Get card images and name
+    
+            localStorage.setItem(localKey, JSON.stringify(data))
+    
+            console.log(data.data)
+            setCardData(data.data)
+            console.log('Fetched from API today')
+        } catch (error) {
+            console.log('Error: ', error)
+        }
       }
-
-      
-      
-      addCards();
+    
+      fetchCardData()
   }, [])
-  
 
-//   async function fetchCardData() {
-//     try {
-//         const response = await(fetch('google.ca'))
-//         const data = await response.json()
-//         console.log(data)
-//         return data
-//     } catch (error) {
-//         console.log('Error: ', error)
-//     }
-//   }
-
-//   fetchCardData()
+  function shuffleCards(array) {
+    return array.sort(() => Math.random() - 0.5)
+  }
 
   function updateCards() {
     alert('Card was clicked')
@@ -56,13 +65,13 @@ export default function Generator() {
         <Header />
             <div className="p-10">
                 <div className="flex flex-wrap justify-center gap-10">
-                    {cards.map((card) => {
+                    {cardData.map((card) => {
                         return (
                             <CardComponent 
                                 key={card.id}
                                 id={card.id}
                                 name={card.name}
-                                url={card.url}
+                                url={card.card_images[0].image_url_cropped}
                                 updateCards={updateCards}
                             />
                         )

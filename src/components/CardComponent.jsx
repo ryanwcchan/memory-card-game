@@ -6,8 +6,7 @@ export default function CardComponent({ id, name, url, updateCards }) {
                 src={url}
                 alt="image of an owl" />
         </div>
-        <h1 className="text-gray-50 pt-2">{name}</h1>
-        <p className="text-gray-50">{`Card key: ${id}`}</p>
+        <h1 className="flex flex-wrap text-blue-400 pt-2 font-semibold break-words">{name}</h1>
     </div>
   )
 }
