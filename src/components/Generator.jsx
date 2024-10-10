@@ -14,10 +14,16 @@ export default function Generator() {
   const [cardData, setCardData] = useState([])
 
   useEffect(() => {
+    async function multipleArchetypes() {
+
+    }
+
     async function fetchCardData() {
         const today = (new Date()).toDateString()
-        const API_URL = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?archetype=Drytron'
-    
+        const API_URL = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?archetype=Blue-Eyes'
+        const archetypeTwo = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?archetype=Voiceless%20Voice'
+        const archetypeThree = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?archetype=Herald'
+
         const localKey = `YugiohCards-${today}`
     
         if (localStorage.getItem(localKey)) {
@@ -29,9 +35,6 @@ export default function Generator() {
         }
 
         localStorage.clear()
-    
-        // const shuffledCards = newCards.sort(() => Math.random() - 0.5)
-        // const selectedCards = shuffledCards.slice(0, 12)
     
         try {
             const response = await(fetch(API_URL))
