@@ -1,4 +1,3 @@
-
 import Generator from "./components/Generator"
 
 function App() {
