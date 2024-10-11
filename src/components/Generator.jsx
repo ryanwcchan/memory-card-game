@@ -6,7 +6,7 @@ function Header({ score }) {
         <div className="flex items-center justify-between p-10 bg-slate-950 text-gray-50">
             <div className="flex flex-col gap-2 text-gray-200">
                 <h1 className="text-3xl font-semibold sm:text-2xl">Yugioh Memory Game</h1>
-                <p className="text-sm">Get points for clicking on an image, but don't click the same one more than once.</p>
+                <p className="text-sm">Get points for clicking on an image, but don't click the same one more than once. (Refresh page once first time load to get cards)</p>
             </div>
             <p>Score: {score}</p>
         </div>
