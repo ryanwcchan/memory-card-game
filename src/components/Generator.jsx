@@ -14,49 +14,49 @@ export default function Generator() {
   const [cardData, setCardData] = useState([])
 
   useEffect(() => {
-    async function multipleArchetypes() {
+    const archetypes = ["Drytron", "Voiceless Voice", "Herald"]
+    const allCards = []
 
-    }
-
-    async function fetchCardData() {
-        const today = (new Date()).toDateString()
-        const API_URL = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?archetype=Blue-Eyes'
-        const archetypeTwo = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?archetype=Voiceless%20Voice'
-        const archetypeThree = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?archetype=Herald'
-
-        const localKey = `YugiohCards-${today}`
+    async function fetchCardData(archetype) {
+        // const today = (new Date()).toDateString()
+        const API_URL = `https://db.ygoprodeck.com/api/v7/cardinfo.php?archetype=${archetype}`
+        
+        const localKey = `YugiohCards-${archetype}`
     
         if (localStorage.getItem(localKey)) {
             const storedData = JSON.parse(localStorage.getItem(localKey))
-            setCardData(shuffleCards(storedData.data));
-            console.log('Fetched card data from cache')
-            console.log(storedData.data)
+            allCards.push(...storedData.data)
+            console.log('Fetched card data from cache', storedData.data)
             return
         }
-
-        localStorage.clear()
     
         try {
             const response = await(fetch(API_URL))
             const data = await response.json()
-    
-            // Get card images and name
-    
+
+            if (data.data) {
+                allCards.push(...data.data)
+            }
+
             localStorage.setItem(localKey, JSON.stringify(data))
-    
-            console.log(data.data)
-            setCardData(data.data)
-            console.log('Fetched from API today')
+            console.log('Fetched from API today', data.data)
+            
         } catch (error) {
-            console.log('Error: ', error)
+            console.log('Error fetching cards: ', error)
         }
       }
-    
-      fetchCardData()
+      
+      const fetchPromises = archetypes.map((archetype) => {
+        fetchCardData(archetype)
+      })
+
+      Promise.all(fetchPromises).then(() => {
+        setCardData(shuffleCards(allCards))
+      })
   }, [])
 
   function shuffleCards(array) {
-    return array.sort(() => Math.random() - 0.5)
+    return [...array].sort(() => Math.random() - 0.5)
   }
 
   function updateCards() {
