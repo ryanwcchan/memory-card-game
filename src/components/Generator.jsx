@@ -63,19 +63,11 @@ export default function Generator() {
 
   function shuffleAndSelect(array, count) {
     const shuffled = [...array];
-    const selected = new Set();
-
     for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
-
-    while (selected.size < count) {
-        const randomIndex = Math.floor(Math.random() * shuffled.length);
-        selected.add(shuffled[randomIndex]);
-    }
-
-    return Array.from(selected);
+    return shuffled.slice(0, count); // Return the first `count` shuffled cards
   }
 
   function updateCards(cardId) {
@@ -89,10 +81,11 @@ export default function Generator() {
 
     let newCards = shuffleAndSelect(cardData, 12);
 
-    const hasUnclickedCard = newCards.filter(card => !clickedCards.includes(card.id));
+    let hasUnclickedCard = newCards.filter(card => !clickedCards.includes(card.id));
 
-    while(!hasUnclickedCard) {
-        newCards = shuffleAndSelect(cardData, 12)
+    while (hasUnclickedCard.length === 0) {
+        newCards = shuffleAndSelect(cardData, 12);
+        hasUnclickedCard = newCards.filter(card => !clickedCards.includes(card.id));
     }
 
     setCardData(newCards);
