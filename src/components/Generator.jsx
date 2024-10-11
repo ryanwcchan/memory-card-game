@@ -55,7 +55,6 @@ export default function Generator() {
       Promise.all(fetchPromises).then(() => {
         const shuffledCards = shuffleAndSelect(allCards, 12)
         setCardData(shuffledCards)
-        // setCardData(shuffledCards.slice(0, 12))
       })
   }, [])
 
@@ -63,28 +62,17 @@ export default function Generator() {
     const shuffled = [...array];
     const selected = new Set();
 
-    // Fisher-Yates Shuffle
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
 
-    // Select 'count' unique random items from the shuffled array
     while (selected.size < count) {
         const randomIndex = Math.floor(Math.random() * shuffled.length);
         selected.add(shuffled[randomIndex]);
     }
 
     return Array.from(selected);
-  }
-
-  function shuffleCards(array) {
-    const shuffled = [...array];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
   }
 
   function updateCards(cardId) {
