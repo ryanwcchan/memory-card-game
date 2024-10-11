@@ -12,6 +12,8 @@ function Header() {
 
 export default function Generator() {
   const [cardData, setCardData] = useState([])
+  const [clickedCards, setClickedCards] = useState([])
+  const [score, setScore] = useState(0)
 
   useEffect(() => {
     const archetypes = ["Drytron", "Voiceless Voice", "Herald"]
@@ -51,12 +53,18 @@ export default function Generator() {
       })
 
       Promise.all(fetchPromises).then(() => {
-        setCardData(shuffleCards(allCards))
+        const shuffledCards = shuffleCards(allCards)
+        setCardData(shuffledCards.slice(0, 12))
       })
   }, [])
 
   function shuffleCards(array) {
-    return [...array].sort(() => Math.random() - 0.5)
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
   }
 
   function updateCards() {
