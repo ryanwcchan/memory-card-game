@@ -4,7 +4,10 @@ import { useEffect, useState } from "react"
 function Header({ score }) {
     return (
         <div className="flex items-center justify-between p-10 bg-slate-950 text-gray-50">
-            <h1 className="text-3xl font-semibold sm:text-2xl">Memory Card Game</h1>
+            <div className="flex flex-col gap-2 text-gray-200">
+                <h1 className="text-3xl font-semibold sm:text-2xl">Yugioh Memory Game</h1>
+                <p className="text-sm">Get points for clicking on an image, but don't click the same one more than once.</p>
+            </div>
             <p>Score: {score}</p>
         </div>
     )
@@ -84,8 +87,15 @@ export default function Generator() {
         setScore(score + 1)
     }
 
-    const shuffledCards = shuffleAndSelect(cardData, 12)
-    setCardData(shuffledCards);
+    let newCards = shuffleAndSelect(cardData, 12);
+
+    const hasUnclickedCard = newCards.filter(card => !clickedCards.includes(card.id));
+
+    while(!hasUnclickedCard) {
+        newCards = shuffleAndSelect(cardData, 12)
+    }
+
+    setCardData(newCards);
   }
 
   return (
@@ -94,7 +104,7 @@ export default function Generator() {
             score={score}
         />
             <div className="p-10 flex-grow">
-                <div className="overflow-y-auto flex flex-wrap justify-center gap-10">
+                <div className="flex flex-wrap justify-center gap-10">
                     {cardData.map((card) => {
                         return (
                             <CardComponent 
