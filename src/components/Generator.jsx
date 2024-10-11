@@ -1,11 +1,11 @@
 import CardComponent from "./CardComponent"
 import { useEffect, useState } from "react"
 
-function Header() {
+function Header({ score }) {
     return (
         <div className="flex items-center justify-between p-10 bg-slate-950 text-gray-50">
             <h1 className="text-3xl font-semibold sm:text-2xl">Memory Card Game</h1>
-            <p>Score</p>
+            <p>Score: {score}</p>
         </div>
     )
 }
@@ -53,10 +53,30 @@ export default function Generator() {
       })
 
       Promise.all(fetchPromises).then(() => {
-        const shuffledCards = shuffleCards(allCards)
-        setCardData(shuffledCards.slice(0, 12))
+        const shuffledCards = shuffleAndSelect(allCards, 12)
+        setCardData(shuffledCards)
+        // setCardData(shuffledCards.slice(0, 12))
       })
   }, [])
+
+  function shuffleAndSelect(array, count) {
+    const shuffled = [...array];
+    const selected = new Set();
+
+    // Fisher-Yates Shuffle
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+
+    // Select 'count' unique random items from the shuffled array
+    while (selected.size < count) {
+        const randomIndex = Math.floor(Math.random() * shuffled.length);
+        selected.add(shuffled[randomIndex]);
+    }
+
+    return Array.from(selected);
+  }
 
   function shuffleCards(array) {
     const shuffled = [...array];
@@ -67,15 +87,26 @@ export default function Generator() {
     return shuffled;
   }
 
-  function updateCards() {
-    alert('Card was clicked')
+  function updateCards(cardId) {
+    if (clickedCards.includes(cardId)) {
+        setClickedCards([])
+        setScore(0)
+    } else {
+        setClickedCards([...clickedCards, cardId])
+        setScore(score + 1)
+    }
+
+    const shuffledCards = shuffleAndSelect(cardData, 12)
+    setCardData(shuffledCards);
   }
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-r from-blue-500 to-blue-700">
-        <Header />
-            <div className="p-10">
-                <div className="flex flex-wrap justify-center gap-10">
+        <Header 
+            score={score}
+        />
+            <div className="p-10 flex-grow">
+                <div className="overflow-y-auto flex flex-wrap justify-center gap-10">
                     {cardData.map((card) => {
                         return (
                             <CardComponent 

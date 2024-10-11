@@ -1,6 +1,6 @@
 export default function CardComponent({ id, name, url, updateCards }) {
   return (
-    <div onClick={() => updateCards()} 
+    <div onClick={() => updateCards(id)} 
       className="w-72 h-80 flex flex-col p-6 justify-center items-center 
       bg-slate-950 rounded-lg hover:shadow-[0_0_15px_5px_rgba(0,191,255,0.7)] 
       duration-200">
